@@ -1,5 +1,4 @@
 use image::{DynamicImage, RgbImage, RgbaImage};
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 /// gblur matches the DynamicImage enum and calls int_blur with specific parameters.
 pub fn gblur(image: &mut DynamicImage, radius: usize) -> Option<DynamicImage> {
@@ -12,12 +11,12 @@ pub fn gblur(image: &mut DynamicImage, radius: usize) -> Option<DynamicImage> {
     }
 }
 
-/// int_blur is the internal blur function.
+/// int_blur3 is the internal blur function for 3 channel images.
 /// It takes multiple parameters:
 /// - raw as a slice of u8, the raw bytes
 /// - width - the width of the image
 /// - heigth - the height of the image
-/// - channels - the number of channels of the image can be either 3 or 4
+/// - channels - the number of channels
 /// - radius - the radius for the blurring
 /// It returns a dynamic image which can be used to display the content of the file.
 fn int3_blur(raw: &[u8], width: u32, height: u32, channels: u32, radius: usize) -> DynamicImage {
@@ -36,7 +35,6 @@ fn int3_blur(raw: &[u8], width: u32, height: u32, channels: u32, radius: usize) 
         blue_data[counter] = raw[i + 2];
         counter += 1;
     }
-    let mut tcl = vec![0u8; size];
     // Applies gaussian blurs to all channels
     rayon::scope(|s| {
         s.spawn(|_| gaussian_blur(&mut red_data, width, height, radius));
@@ -59,6 +57,14 @@ fn int3_blur(raw: &[u8], width: u32, height: u32, channels: u32, radius: usize) 
     }
 }
 
+/// int_blur4 is the internal blur function for 3 channel images.
+/// It takes multiple parameters:
+/// - raw as a slice of u8, the raw bytes
+/// - width - the width of the image
+/// - heigth - the height of the image
+/// - channels - the number of channels
+/// - radius - the radius for the blurring
+/// It returns a dynamic image which can be used to display the content of the file.
 fn int4_blur(raw: &[u8], width: u32, height: u32, channels: u32, radius: usize) -> DynamicImage {
     let width = width as usize;
     let height = height as usize;
@@ -77,7 +83,6 @@ fn int4_blur(raw: &[u8], width: u32, height: u32, channels: u32, radius: usize) 
         alpha_data[counter] = raw[i + 3];
         counter += 1;
     }
-    let mut tcl = vec![0u8; size];
     // Applies gaussian blurs to all channels
     rayon::scope(|s| {
         s.spawn(|_| gaussian_blur(&mut red_data, width, height, radius));
