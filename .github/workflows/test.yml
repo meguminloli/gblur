@@ -4,16 +4,13 @@ on: [push]
 
 jobs:
 
-  test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+  test-ubuntu:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           default: true
       - name: Rust unit tests
         run: cargo test
@@ -27,13 +24,14 @@ jobs:
           python3 -m pip install maturin
           maturin develop
           python3 tests/test_blur.py
+
   test-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           default: true
       - name: Rust unit tests
         run: cargo test

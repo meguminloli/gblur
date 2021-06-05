@@ -8,9 +8,9 @@ mod test {
     #[test]
     fn test_blur() {
         let mut img = image::open("tests/cballs.png").unwrap();
-        let mut res_img = crate::blur::gblur(&mut img, 1).unwrap();
+        let res_img = crate::blur::gblur(&mut img, 1).unwrap();
         let mut f = std::fs::File::create("tests/cballs_blured.png").unwrap();
-        res_img.write_to(&mut f, image::ImageFormat::Png);
+        res_img.write_to(&mut f, image::ImageFormat::Png).unwrap();
     }
 }
 
