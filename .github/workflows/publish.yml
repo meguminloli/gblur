@@ -4,7 +4,6 @@ on:
   push:
     branches:
        - master
-  pull-request:
   release:
     types:
       - released
