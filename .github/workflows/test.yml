@@ -1,4 +1,4 @@
-name: gblur
+name: gblur-test
 
 on: [push]
 
